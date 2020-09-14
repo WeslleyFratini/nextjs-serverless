@@ -1,6 +1,41 @@
 import {NowRequest, NowResponse } from '@vercel/node';
+import { MongoClient, Db } from 'mongodb';
+import url from 'url';
 
-export default(request: NowRequest, response: NowResponse)=>
-{
-    return response.json({ message: 'Hello Word'})
+let cacheDb: Db = null;
+
+async function connectToDataBase(uri: string){
+    if(cacheDb){
+        return cacheDb;
+    }
+
+    const client = await MongoClient.connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology:true,
+    });
+
+    const dbName  = url.parse(uri).pathname.substr(1); 
+
+    const db = client.db('dbName');
+
+    cacheDb = db;
+
+    return db;
+ 
 }
+
+export default async (request: NowRequest, response: NowResponse)=>
+{
+    const { email } = request.body;
+    
+    const db = await connectToDataBase(process.env.MONGODB_URI);
+
+    const collection = db.collection('subscribers');
+
+    await collection.insertOne({
+        email,
+        subscribedAt: new Date(),
+    })    
+
+    return response.status(201).json({ ok: true});
+} 

@@ -1,16 +1,16 @@
-import {Flex, Image, Button, Text } from '@chakra-ui/core'
+import { useState, FormEvent } from 'react';
+import { Flex, Image, Button, Text } from '@chakra-ui/core'
 import Input from '../components/Input'
-import { useState } from 'react';
 import axios from 'axios';
 
 export default function Home() {
+  const [email, setEmail] = useState('');
 
-  const[email, setEmail] = useState('');
+  function handleSignUpToNewsletter(event: FormEvent) {
+    event.preventDefault();
 
-  function handleSignUpToNewsletter(){
-    axios.pos('/api/subscribe', { email: 'weslley@gmail.com'})
-
-  };
+    axios.post('/api/subscribe', { email });
+  }
 
   return (
     <Flex
@@ -32,18 +32,18 @@ export default function Home() {
         maxW="400px"
       >
         <Image marginBottom={8} src="/rocketseat.svg" alt="Rocketseat" />
-  
+
         <Text textAlign="center" fontSize="sm" color="gray.400" marginBottom={2}>
           Assine a newsletter da Rocketseat e receba os melhores conteúdos sobre programação!
         </Text>
-  
+
         <Input
           placeholder="Seu melhor e-mail"
           marginTop={2}
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
-  
+
         <Button
           type="submit"
           backgroundColor="purple.500"
