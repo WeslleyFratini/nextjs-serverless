@@ -18,10 +18,10 @@ $ git clone
 $ cd 
 
 # Install the dependencies
-$ yarn install
+$ npm or yarn install
 
 # Run application
-$ yarn dev
+$ npm or yarn dev
 ```
 
 
